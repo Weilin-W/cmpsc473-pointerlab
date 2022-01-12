@@ -10,7 +10,14 @@
 int compare_by_price(Object* obj1, Object* obj2)
 {
     // IMPLEMENT THIS
-    return 0;
+    Object* result;
+    if(&obj1 < &obj2){
+        *result = obj1 - obj2;
+    }else{
+        *result = obj2 - obj1;
+    }
+    //return 0;
+    return(&result);
 }
 
 // Compares the quantity of obj1 with obj2
