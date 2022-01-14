@@ -10,14 +10,13 @@
 int compare_by_price(Object* obj1, Object* obj2)
 {
     // IMPLEMENT THIS
-    Object* result;
-    if(&obj1 < &obj2){
-        *result = obj1 - obj2;
+    if(obj1 < obj2){
+        return(-1);
+    }else if(obj1 > obj2){
+        return(1);
     }else{
-        *result = obj2 - obj1;
+        return(0);
     }
-    //return 0;
-    return(&result);
 }
 
 // Compares the quantity of obj1 with obj2
@@ -194,4 +193,5 @@ void split(LinkedListNode** head, LinkedListNode** split_head)
 void mergesort(LinkedListNode** head, compare_fn compare)
 {
     // IMPLEMENT THIS
+    
 }
