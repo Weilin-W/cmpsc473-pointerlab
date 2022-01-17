@@ -1,6 +1,6 @@
 // DO NOT INCLUDE ANY OTHER LIBRARIES/FILES
-#include "pointer.h"
-
+#include <pointer.h>
+#include <string.h>
 // In this assignment, you can assume that function parameters are valid and the memory is managed by the caller
 
 // Compares the price of obj1 with obj2
@@ -10,9 +10,9 @@
 int compare_by_price(Object* obj1, Object* obj2)
 {
     // IMPLEMENT THIS
-    if(obj1 < obj2){
+    if(obj1->virtual_func_table.price < obj2->virtual_func_table.price){
         return(-1);
-    }else if(obj1 > obj2){
+    }else if(obj1->virtual_func_table.price > obj2->virtual_func_table.price){
         return(1);
     }else{
         return(0);
@@ -34,6 +34,9 @@ int compare_by_quantity(Object* obj1, Object* obj2)
 void static_price_object_construct(StaticPriceObject* obj, unsigned int quantity, const char* name, double price)
 {
     // IMPLEMENT THIS
+    obj->Object.quantity = quantity;
+    strcpy(obj->Object.name,name);
+    obj->price = price;
 }
 
 // Initializes a DynamicPriceObject with the given quantity, name, base price, and price scaling factor
@@ -41,13 +44,21 @@ void static_price_object_construct(StaticPriceObject* obj, unsigned int quantity
 void dynamic_price_object_construct(DynamicPriceObject* obj, unsigned int quantity, const char* name, double base, double factor)
 {
     // IMPLEMENT THIS
+    obj->quantity = quantity;
+    strcpy(obj->Object.name,name);
+    obj->base = base;
+    obj->factor = factor;
 }
 
 // Returns the price of a StaticPriceObject or ERR_OUT_OF_STOCK if it is out of stock
 double static_price(StaticPriceObject* obj)
 {
     // IMPLEMENT THIS
-    return 0;
+    if(obj->price != NULL){
+        return(obj->price);
+    }else{
+        return(ERR_OUT_OF_STOCK);
+    }
 }
 
 // Returns the price of a DynamicPriceObject or ERR_OUT_OF_STOCK if it is out of stock
@@ -55,7 +66,11 @@ double static_price(StaticPriceObject* obj)
 double dynamic_price(DynamicPriceObject* obj)
 {
     // IMPLEMENT THIS
-    return 0;
+    if(obj->price != NULL){
+        return(obj->price);
+    }else{
+        return(ERR_OUT_OF_STOCK);
+    }
 }
 
 // Returns the bulk price of purchasing multiple (indicated by quantity parameter) StaticPriceObject at a discount where the first item is regular price and the additional items are scaled by the BULK_DISCOUNT factor
@@ -84,12 +99,16 @@ double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
 void iterator_begin(LinkedListIterator* iter, LinkedListNode** head)
 {
     // IMPLEMENT THIS
+    iter = iter->head;
 }
 
 // Updates an iterator to move to the next element in the list if possible
 void iterator_next(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
+    while(iter != NULL){
+        iter = iter->next;
+    }
 }
 
 // Returns true if iterator is at the end of the list or false otherwise
@@ -97,7 +116,11 @@ void iterator_next(LinkedListIterator* iter)
 bool iterator_at_end(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    return false;
+    if(iter->next == NULL){
+        return(true);
+    }else{
+        return(false);
+    }
 }
 
 // Returns the current object that the iterator references or NULL if the iterator is at the end of the list
