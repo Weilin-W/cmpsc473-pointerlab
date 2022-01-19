@@ -221,13 +221,15 @@ Data foreach(LinkedListNode** head, foreach_fn func, Data data)
 int length(LinkedListNode** head)
 {
     // IMPLEMENT THIS
+    /*
     int count = 0;
-    struct LinkedListNode* currentNode = head;
-    while(currentNode != NULL){
-        currentNode = currentNode->next;
+    while(*head != NULL){
+        *head = *head->next;
         count += 1;
     }
     return (count);
+    */
+    return(0);
 }
 
 //
@@ -252,10 +254,6 @@ void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn 
 void split(LinkedListNode** head, LinkedListNode** split_head)
 {
     // IMPLEMENT THIS
-    struct LinkedListNode* fstHalf = head;
-    struct LinkedListNode* secHalf = split_head;
-
-    int length = length(head);
 }
 
 // Implement the mergesort algorithm to sort the list
