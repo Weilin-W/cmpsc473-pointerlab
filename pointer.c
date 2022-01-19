@@ -1,6 +1,6 @@
 // DO NOT INCLUDE ANY OTHER LIBRARIES/FILES
-#include <pointer.h>
-#include <string.h>
+#include "pointer.h"
+
 // In this assignment, you can assume that function parameters are valid and the memory is managed by the caller
 
 // Compares the price of obj1 with obj2
@@ -10,9 +10,9 @@
 int compare_by_price(Object* obj1, Object* obj2)
 {
     // IMPLEMENT THIS
-    if(obj1->virtual_func_table.price < obj2->virtual_func_table.price){
+    if(object_price(obj1) < object_price(obj2)){
         return(-1);
-    }else if(obj1->virtual_func_table.price > obj2->virtual_func_table.price){
+    }else if(object_price(obj1) > object_price(obj2)){
         return(1);
     }else{
         return(0);
@@ -26,7 +26,13 @@ int compare_by_price(Object* obj1, Object* obj2)
 int compare_by_quantity(Object* obj1, Object* obj2)
 {
     // IMPLEMENT THIS
-    return 0;
+    if(object_quantity(obj1) < object_quantity(obj2)){
+        return(-1);
+    }else if(object_quantity(obj1) > object_quantity(obj2)){
+        return(1);
+    }else{
+        return(0);
+    }
 }
 
 // Initializes a StaticPriceObject with the given quantity, name, and price
@@ -34,10 +40,10 @@ int compare_by_quantity(Object* obj1, Object* obj2)
 void static_price_object_construct(StaticPriceObject* obj, unsigned int quantity, const char* name, double price)
 {
     // IMPLEMENT THIS
-    
-    obj->Object.quantity = quantity;
-    strcpy(obj->Object.name,name);
-    obj->price = price;
+    //Used pointer.h to initialize staticPriceObjects
+    object_quantity(obj) = quantity;
+    object_name(obj) = name;
+    object_price(obj) = price;
 }
 
 // Initializes a DynamicPriceObject with the given quantity, name, base price, and price scaling factor
@@ -45,8 +51,8 @@ void static_price_object_construct(StaticPriceObject* obj, unsigned int quantity
 void dynamic_price_object_construct(DynamicPriceObject* obj, unsigned int quantity, const char* name, double base, double factor)
 {
     // IMPLEMENT THIS
-    obj->quantity = quantity;
-    strcpy(obj->Object.name,name);
+    object_quantity(obj) = quantity;
+    object_name(obj) = name;
     obj->base = base;
     obj->factor = factor;
 }
@@ -55,10 +61,10 @@ void dynamic_price_object_construct(DynamicPriceObject* obj, unsigned int quanti
 double static_price(StaticPriceObject* obj)
 {
     // IMPLEMENT THIS
-    if(obj->price != NULL){
-        return(obj->price);
+    if(object_price(obj) != NULL){
+        return(object_price(obj));
     }else{
-        return(ERR_OUT_OF_STOCK);
+        return("ERR_OUT_OF_STOCK");
     }
 }
 
@@ -67,10 +73,10 @@ double static_price(StaticPriceObject* obj)
 double dynamic_price(DynamicPriceObject* obj)
 {
     // IMPLEMENT THIS
-    if(obj->price != NULL){
-        return(obj->price);
+    if(object_price(obj) != NULL){
+        return(object_price(obj));
     }else{
-        return(ERR_OUT_OF_STOCK);
+        return("ERR_OUT_OF_STOCK");
     }
 }
 
@@ -100,15 +106,16 @@ double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
 void iterator_begin(LinkedListIterator* iter, LinkedListNode** head)
 {
     // IMPLEMENT THIS
-    iter = iter->head;
+    struct LinkedListIterator* currentNode = iter->curr;
+    currentNode = *head;
 }
 
 // Updates an iterator to move to the next element in the list if possible
 void iterator_next(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    while(iter != NULL){
-        iter = iter->next;
+    while(iter->curr != NULL){
+        iter->curr = iter->next;
     }
 }
 
@@ -168,7 +175,7 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
     struct LinkedListNode* newNode = node;
     //check if current node is at the end, else insert new Node
     if(currentNode->next == NULL){
-        return(ERR_INSERT_AFTER_END);
+        return("ERR_INSERT_AFTER_END");
     }else{
         newNode->next = currentNode->next;
         currentNode->next = newNode;
@@ -250,10 +257,7 @@ void split(LinkedListNode** head, LinkedListNode** split_head)
     struct LinkedListNode* fstHalf = head;
     struct LinkedListNode* secHalf = split_head;
 
-    int length = length(&head);
-    if (length < 2){
-        
-    }
+    int length = length(head);
 }
 
 // Implement the mergesort algorithm to sort the list
