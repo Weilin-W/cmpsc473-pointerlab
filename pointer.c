@@ -34,6 +34,7 @@ int compare_by_quantity(Object* obj1, Object* obj2)
 void static_price_object_construct(StaticPriceObject* obj, unsigned int quantity, const char* name, double price)
 {
     // IMPLEMENT THIS
+    
     obj->Object.quantity = quantity;
     strcpy(obj->Object.name,name);
     obj->price = price;
@@ -136,7 +137,20 @@ Object* iterator_get_object(LinkedListIterator* iter)
 LinkedListNode* iterator_remove(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    return NULL;
+    //Define current node, plus a temp node
+
+    struct LinkedListIterator* currentNode = iter->curr;
+    struct LinkedListIterator* tempNode = NULL;
+
+    //check if current node is empty, if not, get value of current 
+    if(currentNode != NULL){
+        tempNode = currentNode;
+        free(currentNode);
+        currentNode = iter->prev_next;
+        return(temp);
+    }else{
+        return NULL;
+    }
 }
 
 // Inserts node after the current node referenced by the iterator
@@ -145,7 +159,17 @@ LinkedListNode* iterator_remove(LinkedListIterator* iter)
 int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
 {
     // IMPLEMENT THIS
-    return 0;
+    //Define current node
+    struct LinkedListIterator* currentNode = iter->curr;
+    struct LinkedListNode* newNode = (struct LinkedListNode*)malloc(sizeof(struct LinkedListNode));
+    //check if current node is at the end, else insert new Node
+    if(currentNode->next == NULL){
+        return(ERR_INSERT_AFTER_END);
+    }else{
+        newNode->next = currentNode->next;
+        currentNode->next = newNode;
+        return(0)
+    }
 }
 
 // Inserts node before the current node referenced by the iterator
