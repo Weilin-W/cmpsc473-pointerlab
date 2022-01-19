@@ -107,9 +107,8 @@ double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
             staticBulkPrice = (firstItemPrice + discountedTotalPrice);
             return(staticBulkPrice);
         }
-    }else{
-        return(ERR_OUT_OF_STOCK);
     }
+    return(ERR_OUT_OF_STOCK);
 }
 
 // Returns the bulk price of purchasing multiple (indicated by quantity parameter) DynamicPriceObject at a discount where the first item is regular price and the additional items are scaled by the BULK_DISCOUNT factor
@@ -136,9 +135,8 @@ double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
             dynamicBulkPrice = (firstItemPrice + discountedTotalPrice);
             return(dynamicBulkPrice);
         }
-    }else{
-        return(ERR_OUT_OF_STOCK);
     }
+    return(ERR_OUT_OF_STOCK);
 }
 
 //
@@ -178,7 +176,7 @@ bool iterator_at_end(LinkedListIterator* iter)
 Object* iterator_get_object(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    if(iter->curr->next != NULL){
+    if(iterator_at_end(iter) == false){
         return((void*)iter->curr);
     }else{
         return(NULL);
@@ -208,7 +206,7 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
 {
     // IMPLEMENT THIS
     //check if current node is at the end, else insert new Node
-    if(iter->curr->next == NULL){
+    if(iterator_at_end(iter) == true){
         return(ERR_INSERT_AFTER_END);
     }else{
         node->next = iter->curr->next;
