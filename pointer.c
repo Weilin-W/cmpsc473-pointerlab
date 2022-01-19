@@ -40,10 +40,13 @@ int compare_by_quantity(Object* obj1, Object* obj2)
 void static_price_object_construct(StaticPriceObject* obj, unsigned int quantity, const char* name, double price)
 {
     // IMPLEMENT THIS
-    //Used pointer.h to initialize staticPriceObjects
-    object_quantity(obj) = quantity;
-    object_name(obj) = name;
-    object_price(obj) = price;
+    obj->price = price;
+    obj->obj.name = name;
+    obj->obj.quantity = quantity;
+    
+    obj->obj.virtual_func_table.price = (void*) static_price;
+    obj->obj.virtual_func_table.bulk_price = (void*) static_bulk_price;
+    
 }
 
 // Initializes a DynamicPriceObject with the given quantity, name, base price, and price scaling factor
@@ -51,18 +54,21 @@ void static_price_object_construct(StaticPriceObject* obj, unsigned int quantity
 void dynamic_price_object_construct(DynamicPriceObject* obj, unsigned int quantity, const char* name, double base, double factor)
 {
     // IMPLEMENT THIS
-    object_quantity(obj) = quantity;
-    object_name(obj) = name;
+    obj->obj.quantity = quantity;
+    obj->obj.name = name;
     obj->base = base;
     obj->factor = factor;
+
+    obj->obj.virtual_func_table.price = (void*) dynamic_price;
+    obj->obj.virtual_func_table.bulk_price = (void*) dynamic_bulk_price;
 }
 
 // Returns the price of a StaticPriceObject or ERR_OUT_OF_STOCK if it is out of stock
 double static_price(StaticPriceObject* obj)
 {
     // IMPLEMENT THIS
-    if(object_quantity(obj) != 0){
-        return(object_price(obj));
+    if(obj->obj.quantity != 0){
+        return(obj->price);
     }else{
         return(ERR_OUT_OF_STOCK);
     }
@@ -73,8 +79,8 @@ double static_price(StaticPriceObject* obj)
 double dynamic_price(DynamicPriceObject* obj)
 {
     // IMPLEMENT THIS
-    if(object_quantity(obj) != 0){
-        return(object_price(obj));
+    if(obj->obj.quantity != 0){
+        return(obj->base * pow(obj->obj.quantity,obj->factor));
     }else{
         return(ERR_OUT_OF_STOCK);
     }
@@ -95,6 +101,7 @@ double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
 double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
 {
     // IMPLEMENT THIS
+    //first normal price, remain each w/ discount
     return 0;
 }
 
@@ -106,8 +113,8 @@ double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
 void iterator_begin(LinkedListIterator* iter, LinkedListNode** head)
 {
     // IMPLEMENT THIS
-    struct LinkedListIterator* currentNode = iter->curr;
-    currentNode = *head;
+    iter->curr = *head;
+    iter->prev_next = head;
 }
 
 // Updates an iterator to move to the next element in the list if possible
@@ -115,7 +122,7 @@ void iterator_next(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
     while(iter->curr != NULL){
-        iter->curr = iter->next;
+        iter->curr = iter->curr->next;
     }
 }
 
@@ -124,7 +131,7 @@ void iterator_next(LinkedListIterator* iter)
 bool iterator_at_end(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    if(iter->next == NULL){
+    if(iter->curr->next == NULL){
         return(true);
     }else{
         return(false);
@@ -135,8 +142,8 @@ bool iterator_at_end(LinkedListIterator* iter)
 Object* iterator_get_object(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    if(iter->next != NULL){
-        return(iter->curr);
+    if(iter->curr->next != NULL){
+        return((void*)iter->curr);
     }else{
         return(NULL);
     }
@@ -148,17 +155,11 @@ Object* iterator_get_object(LinkedListIterator* iter)
 LinkedListNode* iterator_remove(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    //Define current node, plus a temp node
-
-    struct LinkedListIterator* currentNode = iter->curr;
-    struct LinkedListIterator* tempNode = NULL;
-
     //check if current node is empty, if not, get value of current 
-    if(currentNode != NULL){
-        tempNode = currentNode;
-        remove(currentNode);
-        currentNode = iter->prev_next;
-        return(temp);
+    if(iterator_get_object(iter) != NULL){
+        LinkedListNode* tempNode = iter->curr; 
+        iter->curr = iter->curr->next;
+        return(tempNode);
     }else{
         return NULL;
     }
@@ -170,15 +171,12 @@ LinkedListNode* iterator_remove(LinkedListIterator* iter)
 int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
 {
     // IMPLEMENT THIS
-    //Define current node
-    struct LinkedListIterator* currentNode = iter->curr;
-    struct LinkedListNode* newNode = node;
     //check if current node is at the end, else insert new Node
-    if(currentNode->next == NULL){
+    if(iter->curr->next == NULL){
         return(ERR_INSERT_AFTER_END);
     }else{
-        newNode->next = currentNode->next;
-        currentNode->next = newNode;
+        node->next = iter->curr->next;
+        iter->curr->next = node;
         return(0);
     }
 }
@@ -188,16 +186,16 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
 void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
 {
     // IMPLEMENT THIS
-    //Define current node
-    struct LinkedListIterator* currentNode = iter->curr;
-    struct LinkedListNode* newNode = node;
-
-    while(currentNode->next != NULL){
-        currentNode = currentNode->next;
+    ///////////////////////////////////
+    //
+    //Logical errors, need to come back
+    //
+    ///////////////////////////////////
+    while(iter->curr->next != NULL){
+        iter->curr = iter->curr->next;
     }
-    newNode = node;
-    newNode->next = currentNode->next;
-    currentNode->next = newNode;
+    node->next = iter->curr->next;
+    iter->curr->next = node;
 }
 //
 // List functions
