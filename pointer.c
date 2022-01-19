@@ -128,7 +128,11 @@ bool iterator_at_end(LinkedListIterator* iter)
 Object* iterator_get_object(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    return NULL;
+    if(iter->next != NULL){
+        return(iter->curr);
+    }else{
+        return(NULL);
+    }
 }
 
 // Removes the current node referenced by the iterator
@@ -161,7 +165,7 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
     // IMPLEMENT THIS
     //Define current node
     struct LinkedListIterator* currentNode = iter->curr;
-    struct LinkedListNode* newNode = (struct LinkedListNode*)malloc(sizeof(struct LinkedListNode));
+    struct LinkedListNode* newNode = node;
     //check if current node is at the end, else insert new Node
     if(currentNode->next == NULL){
         return(ERR_INSERT_AFTER_END);
@@ -177,8 +181,17 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
 void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
 {
     // IMPLEMENT THIS
-}
+    //Define current node
+    struct LinkedListIterator* currentNode = iter->curr;
+    struct LinkedListNode* newNode = node;
 
+    while(currentNode->next != NULL){
+        currentNode = currentNode->next;
+    }
+    newNode = node;
+    newNode->next = currentNode->next;
+    currentNode->next = newNode;
+}
 //
 // List functions
 //
@@ -203,7 +216,13 @@ Data foreach(LinkedListNode** head, foreach_fn func, Data data)
 int length(LinkedListNode** head)
 {
     // IMPLEMENT THIS
-    return 0;
+    int count = 0;
+    struct LinkedListNode* currentNode = head;
+    while(currentNode != NULL){
+        currentNode = currentNode->next;
+        count += 1;
+    }
+    return (count);
 }
 
 //
@@ -228,6 +247,13 @@ void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn 
 void split(LinkedListNode** head, LinkedListNode** split_head)
 {
     // IMPLEMENT THIS
+    struct LinkedListNode* fstHalf = head;
+    struct LinkedListNode* secHalf = split_head;
+
+    int length = length(&head);
+    if (length < 2){
+        
+    }
 }
 
 // Implement the mergesort algorithm to sort the list
