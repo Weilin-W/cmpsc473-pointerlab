@@ -91,7 +91,25 @@ double dynamic_price(DynamicPriceObject* obj)
 double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
 {
     // IMPLEMENT THIS
-    return 0;
+    if(obj->obj.quantity != 0){
+        if(obj->obj.quantity == 1){
+            return(static_price(obj));
+        }else if(obj->obj.quantity >= 1){
+            double firstItemPrice = static_price(obj);
+            double discountedTotalPrice = 0;
+            double staticBulkPrice = 0;
+            int count = 1;
+            while(count != obj->obj.quantity){
+                //Not sure if price of additional items different*****************************************************************
+                discountedTotalPrice += (static_price(obj) * (BULK_DISCOUNT));
+                count += 1;
+            }
+            staticBulkPrice = (firstItemPrice + discountedTotalPrice);
+            return(staticBulkPrice);
+        }
+    }else{
+        return(ERR_OUT_OF_STOCK);
+    }
 }
 
 // Returns the bulk price of purchasing multiple (indicated by quantity parameter) DynamicPriceObject at a discount where the first item is regular price and the additional items are scaled by the BULK_DISCOUNT factor
@@ -101,8 +119,26 @@ double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
 double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
 {
     // IMPLEMENT THIS
-    //first normal price, remain each w/ discount
-    return 0;
+    if(obj->obj.quantity != 0){
+        if(obj->obj.quantity == 1){
+            return(dynamic_price(obj));
+        }else if(obj->obj.quantity >= 1){
+            double firstItemPrice = dynamic_price(obj);
+            double bulkAdditionalPrice = dynamic_price(obj);
+            double discountedTotalPrice = 0;
+            double dynamicBulkPrice = 0;
+            int count = 1;
+            while(count != obj->obj.quantity){
+                discountedTotalPrice += (bulkAdditionalPrice * (BULK_DISCOUNT));
+                bulkAdditionalPrice -= (bulkAdditionalPrice * (BULK_DISCOUNT));
+                count += 1;
+            }
+            dynamicBulkPrice = (firstItemPrice + discountedTotalPrice);
+            return(dynamicBulkPrice);
+        }
+    }else{
+        return(ERR_OUT_OF_STOCK);
+    }
 }
 
 //
