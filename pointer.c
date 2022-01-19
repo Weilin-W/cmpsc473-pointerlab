@@ -61,10 +61,10 @@ void dynamic_price_object_construct(DynamicPriceObject* obj, unsigned int quanti
 double static_price(StaticPriceObject* obj)
 {
     // IMPLEMENT THIS
-    if(object_price(obj) != NULL){
+    if(object_quantity(obj) != 0){
         return(object_price(obj));
     }else{
-        return("ERR_OUT_OF_STOCK");
+        return(ERR_OUT_OF_STOCK);
     }
 }
 
@@ -73,10 +73,10 @@ double static_price(StaticPriceObject* obj)
 double dynamic_price(DynamicPriceObject* obj)
 {
     // IMPLEMENT THIS
-    if(object_price(obj) != NULL){
+    if(object_quantity(obj) != 0){
         return(object_price(obj));
     }else{
-        return("ERR_OUT_OF_STOCK");
+        return(ERR_OUT_OF_STOCK);
     }
 }
 
@@ -156,7 +156,7 @@ LinkedListNode* iterator_remove(LinkedListIterator* iter)
     //check if current node is empty, if not, get value of current 
     if(currentNode != NULL){
         tempNode = currentNode;
-        free(currentNode);
+        remove(currentNode);
         currentNode = iter->prev_next;
         return(temp);
     }else{
@@ -175,11 +175,11 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
     struct LinkedListNode* newNode = node;
     //check if current node is at the end, else insert new Node
     if(currentNode->next == NULL){
-        return("ERR_INSERT_AFTER_END");
+        return(ERR_INSERT_AFTER_END);
     }else{
         newNode->next = currentNode->next;
         currentNode->next = newNode;
-        return(0)
+        return(0);
     }
 }
 
