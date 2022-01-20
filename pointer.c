@@ -172,7 +172,7 @@ void iterator_begin(LinkedListIterator* iter, LinkedListNode** head)
 void iterator_next(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    while(iter->curr != NULL){
+    if(iter->curr != NULL){
         iter->curr = iter->curr->next;
     }
 }
@@ -182,7 +182,7 @@ void iterator_next(LinkedListIterator* iter)
 bool iterator_at_end(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    if(iter->curr->next == NULL){
+    if(iter->curr == NULL){
         return(true);
     }else{
         return(false);
@@ -193,11 +193,6 @@ bool iterator_at_end(LinkedListIterator* iter)
 Object* iterator_get_object(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    //////////////
-    //
-    //Need Fix
-    //
-    //////////////
     if(iterator_at_end(iter) == false){
         return(iter->curr->obj);
     }else{
