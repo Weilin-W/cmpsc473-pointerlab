@@ -90,11 +90,6 @@ double dynamic_price(DynamicPriceObject* obj)
 // Return ERR_OUT_OF_STOCK if there is insufficient quantity available
 double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
 {
-    //////////////
-    //
-    //Need Fix
-    //
-    //////////////
     // IMPLEMENT THIS
 
     //compute first item price, other items just sum all the price and multiply with bulk discount
@@ -125,27 +120,22 @@ double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
 // Return ERR_OUT_OF_STOCK if there is insufficient quantity available
 double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
 {
-    //////////////
-    //
-    //Need Fix
-    //
-    //////////////
     // IMPLEMENT THIS
 
-    //sum up, and multiply by once; After each calculation, quantity will different
+    //sum up, and multiply by once; After each calculation, quantity will be different
     if(obj->obj.quantity != 0 && obj->obj.quantity >= quantity){
         if(quantity == 1){
             return(dynamic_price(obj));
         }else if(quantity >= 2 && obj->factor != 0){
             double firstItemPrice = obj->base * pow(obj->obj.quantity,obj->factor);
-            quantity -= 1;
-            double bulkAdditionalPrice = obj->base * pow(quantity,obj->factor);
+            unsigned int tempQuantity = obj->obj.quantity - 1;
             double discountedTotalPrice = 0;
             double dynamicBulkPrice = 0;
-            while(quantity != 0){
-                discountedTotalPrice += bulkAdditionalPrice;
-                quantity -= 1;
+            while(tempQuantity != 0){
+                discountedTotalPrice += obj->base * pow(tempQuantity,obj->factor);
+                tempQuantity -= 1;
             }
+            discountedTotalPrice *= BULK_DISCOUNT;
             dynamicBulkPrice = (firstItemPrice + discountedTotalPrice);
             return(dynamicBulkPrice);
         }else if(quantity >= 2 && obj->factor == 0){
