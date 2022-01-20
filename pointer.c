@@ -259,11 +259,21 @@ void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
 void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* avg)
 {
     // IMPLEMENT THIS
-    ///////////////////////////////////
-    //
-    //Need Fix
-    //
-    ///////////////////////////////////
+    int count = 0;
+    double sum = 0;
+    if(count < length(head)){
+        if(head->obj.price > max){
+            max = head->obj.price;
+        }
+        if(head->obj.price < min){
+            min = head->obj.price;
+        }
+
+        sum += head->obj.price;
+        head->next;
+        count += 1;
+    }
+    *avg = 1.0*sum/length(head);
 }
 
 // Executes the func function for each node in the list
@@ -295,7 +305,6 @@ int length(LinkedListNode** head)
 {
     
     // IMPLEMENT THIS
-    /*
     LinkedListIterator* iter;
     int count = 0;
     iterator_begin(iter, head);
@@ -304,8 +313,6 @@ int length(LinkedListNode** head)
         count += 1;
     }
     return (count);
-    */
-    return(0);
     
 }
 
@@ -324,6 +331,7 @@ int length(LinkedListNode** head)
 void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn compare)
 {
     // IMPLEMENT THIS
+    
 }
 
 // Split the list head in half and place half in the split list
