@@ -90,7 +90,14 @@ double dynamic_price(DynamicPriceObject* obj)
 // Return ERR_OUT_OF_STOCK if there is insufficient quantity available
 double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
 {
+    //////////////
+    //
+    //Need Fix
+    //
+    //////////////
     // IMPLEMENT THIS
+
+    //compute first item price, other items just sum all the price and multiply with bulk discount
     if(obj->obj.quantity != 0){
         if(obj->obj.quantity == 1){
             return(static_price(obj));
@@ -100,11 +107,11 @@ double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
             double staticBulkPrice = 0;
             int count = 1;
             while(count != obj->obj.quantity){
-                //Not sure if price of additional items different*****************************************************************
-                discountedTotalPrice += (static_price(obj) * (BULK_DISCOUNT));
+                discountedTotalPrice += (static_price(obj));
                 count += 1;
             }
-            staticBulkPrice = (firstItemPrice + discountedTotalPrice);
+            
+            staticBulkPrice = (firstItemPrice + (discountedTotalPrice * (BULK_DISCOUNT)));
             return(staticBulkPrice);
         }
     }
@@ -117,7 +124,14 @@ double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
 // Return ERR_OUT_OF_STOCK if there is insufficient quantity available
 double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
 {
+    //////////////
+    //
+    //Need Fix
+    //
+    //////////////
     // IMPLEMENT THIS
+
+    //sum up, and multiply by once; After each calculation, quantity will different
     if(obj->obj.quantity != 0){
         if(obj->obj.quantity == 1){
             return(dynamic_price(obj));
@@ -176,8 +190,13 @@ bool iterator_at_end(LinkedListIterator* iter)
 Object* iterator_get_object(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
+    //////////////
+    //
+    //Need Fix
+    //
+    //////////////
     if(iterator_at_end(iter) == false){
-        return((void*)iter->curr);
+        return(iter->curr->obj);
     }else{
         return(NULL);
     }
@@ -189,7 +208,12 @@ Object* iterator_get_object(LinkedListIterator* iter)
 LinkedListNode* iterator_remove(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
-    //check if current node is empty, if not, get value of current 
+    //check if current node is empty, if not, get value of current
+    //////////////
+    //
+    //Need Fix
+    //
+    //////////////
     if(iterator_get_object(iter) != NULL){
         LinkedListNode* tempNode = iter->curr; 
         iter->curr = iter->curr->next;
@@ -222,14 +246,16 @@ void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
     // IMPLEMENT THIS
     ///////////////////////////////////
     //
-    //Logical errors, need to come back
+    //Need Fix
     //
     ///////////////////////////////////
+    /*
     while(iter->curr->next != NULL){
         iter->curr = iter->curr->next;
     }
-    node->next = iter->curr->next;
-    iter->curr->next = node;
+    */
+    node->next = iter->curr;
+    iter->curr = node;
 }
 //
 // List functions
@@ -239,6 +265,11 @@ void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
 void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* avg)
 {
     // IMPLEMENT THIS
+    ///////////////////////////////////
+    //
+    //Need Fix
+    //
+    ///////////////////////////////////
 }
 
 // Executes the func function for each node in the list
@@ -248,15 +279,31 @@ void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* 
 Data foreach(LinkedListNode** head, foreach_fn func, Data data)
 {
     // IMPLEMENT THIS
+    ///////////////////////////////////
+    //
+    //Need Fix
+    //
+    ///////////////////////////////////
+    /*
+    int count = length(head);
+
+    while(count != 0){
+        data = func(head, data);
+        head = head->next;
+        count -= 1;
+    }
+    */
     return data;
 }
 
 // Returns the length of the list
 int length(LinkedListNode** head)
 {
+    //iterator
     // IMPLEMENT THIS
     /*
     int count = 0;
+    
     while(*head != NULL){
         *head = *head->next;
         count += 1;
