@@ -207,15 +207,11 @@ LinkedListNode* iterator_remove(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
     //check if current node is empty, if not, get value of current
-    //////////////
-    //
-    //Need Fix
-    //
-    //////////////
-    if(iterator_get_object(iter) != NULL){
-        LinkedListNode* tempNode = iter->curr; 
+    if(iter->curr != NULL){
+        LinkedListNode* temp = iter->curr;
         iter->curr = iter->curr->next;
-        return(tempNode);
+        iterator_begin(iter,&iter->curr);
+        return(temp);
     }else{
         return NULL;
     }
