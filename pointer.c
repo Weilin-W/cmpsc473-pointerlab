@@ -98,21 +98,22 @@ double static_bulk_price(StaticPriceObject* obj, unsigned int quantity)
     // IMPLEMENT THIS
 
     //compute first item price, other items just sum all the price and multiply with bulk discount
-    if(obj->obj.quantity != 0){
-        if(obj->obj.quantity == 1){
+    if(obj->obj.quantity != 0 && obj->obj.quantity >= quantity){
+        if(quantity == 1){
             return(static_price(obj));
-        }else if(obj->obj.quantity >= 1){
+        }else if(quantity >= 2){
             double firstItemPrice = static_price(obj);
             double discountedTotalPrice = 0;
             double staticBulkPrice = 0;
             int count = 1;
-            while(count != obj->obj.quantity){
+            while(count != quantity){
                 discountedTotalPrice += (static_price(obj));
                 count += 1;
             }
-            
             staticBulkPrice = (firstItemPrice + (discountedTotalPrice * (BULK_DISCOUNT)));
             return(staticBulkPrice);
+        }else{
+            return(0);
         }
     }
     return(ERR_OUT_OF_STOCK);
@@ -132,22 +133,34 @@ double dynamic_bulk_price(DynamicPriceObject* obj, unsigned int quantity)
     // IMPLEMENT THIS
 
     //sum up, and multiply by once; After each calculation, quantity will different
-    if(obj->obj.quantity != 0){
-        if(obj->obj.quantity == 1){
+    if(obj->obj.quantity != 0 && obj->obj.quantity >= quantity){
+        if(quantity == 1){
             return(dynamic_price(obj));
-        }else if(obj->obj.quantity >= 1){
-            double firstItemPrice = dynamic_price(obj);
-            double bulkAdditionalPrice = dynamic_price(obj);
+        }else if(quantity >= 2 && obj->factor != 0){
+            double firstItemPrice = obj->base * pow(obj->obj.quantity,obj->factor);
+            quantity -= 1;
+            double bulkAdditionalPrice = obj->base * pow(quantity,obj->factor);
             double discountedTotalPrice = 0;
             double dynamicBulkPrice = 0;
-            int count = 1;
-            while(count != obj->obj.quantity){
-                discountedTotalPrice += (bulkAdditionalPrice * (BULK_DISCOUNT));
-                bulkAdditionalPrice -= (bulkAdditionalPrice * (BULK_DISCOUNT));
-                count += 1;
+            while(quantity != 0){
+                discountedTotalPrice += bulkAdditionalPrice;
+                quantity -= 1;
             }
             dynamicBulkPrice = (firstItemPrice + discountedTotalPrice);
             return(dynamicBulkPrice);
+        }else if(quantity >= 2 && obj->factor == 0){
+            double firstItemPrice = dynamic_price(obj);
+            double discountedTotalPrice = 0;
+            double dynamicBulkPrice = 0;
+            int count = 1;
+            while(count != quantity){
+                discountedTotalPrice += (dynamic_price(obj));
+                count += 1;
+            }
+            dynamicBulkPrice = (firstItemPrice + (discountedTotalPrice * (BULK_DISCOUNT)));
+            return(dynamicBulkPrice);
+        }else{
+            return(0);
         }
     }
     return(ERR_OUT_OF_STOCK);
@@ -299,18 +312,20 @@ Data foreach(LinkedListNode** head, foreach_fn func, Data data)
 // Returns the length of the list
 int length(LinkedListNode** head)
 {
-    //iterator
+    
     // IMPLEMENT THIS
     /*
+    LinkedListIterator* iter;
     int count = 0;
-    
-    while(*head != NULL){
-        *head = *head->next;
+    iterator_begin(iter, head);
+    while (iterator_at_end(iter) != true){
+        iterator_next(iter);
         count += 1;
     }
     return (count);
     */
     return(0);
+    
 }
 
 //
