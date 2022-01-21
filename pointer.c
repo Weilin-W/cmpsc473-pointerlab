@@ -165,7 +165,7 @@ void iterator_begin(LinkedListIterator* iter, LinkedListNode** head)
 {
     // IMPLEMENT THIS
     iter->curr = *head;
-    iter->prev_next = head;
+    iter->prev_next = head; //double pointer, prev node pointing to next node
 }
 
 // Updates an iterator to move to the next element in the list if possible
@@ -174,6 +174,7 @@ void iterator_next(LinkedListIterator* iter)
     // IMPLEMENT THIS
     if(iter->curr != NULL){
         iter->curr = iter->curr->next;
+        iter->prev_next = &iter->curr;
     }
 }
 
@@ -207,10 +208,12 @@ LinkedListNode* iterator_remove(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
     //check if current node is empty, if not, get value of current
-    if(iter->curr != NULL){
-        LinkedListNode* temp = iter->curr;
-        iter->curr = iter->curr->next;
-        iterator_begin(iter,&iter->curr);
+    //update curr and update the prev_next(-10123 curr = 1) prev_next equals 1;
+    if(iterator_at_end(iter) != true){
+        LinkedListNode* temp = *iter->prev_next;
+        *iter->prev_next = iter->curr->next;
+        //iter->curr = iter->curr->next;
+        iterator_next(iter);
         return(temp);
     }else{
         return NULL;
@@ -248,6 +251,7 @@ void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
         iter->curr = iter->curr->next;
     }
     */
+    //insert the node before the current node
     node->next = iter->curr;
     iter->curr = node;
 }
@@ -259,14 +263,17 @@ void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
 void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* avg)
 {
     // IMPLEMENT THIS
+    //run thru the head, find value of max, set equal to max
+    /*
     int count = 0;
     double sum = 0;
+    //how to use double pointer
     if(count < length(head)){
         if(head->obj.price > max){
-            max = head->obj.price;
+            *max = head->obj.price;
         }
         if(head->obj.price < min){
-            min = head->obj.price;
+            *min = head->obj.price;
         }
 
         sum += head->obj.price;
@@ -274,6 +281,7 @@ void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* 
         count += 1;
     }
     *avg = 1.0*sum/length(head);
+    */
 }
 
 // Executes the func function for each node in the list
@@ -295,15 +303,14 @@ Data foreach(LinkedListNode** head, foreach_fn func, Data data)
         data = func(head, data);
         head = head->next;
         count -= 1;
-    }
-    */
+    }*/
     return data;
 }
 
 // Returns the length of the list
 int length(LinkedListNode** head)
 {
-    
+    /*
     // IMPLEMENT THIS
     LinkedListIterator* iter;
     int count = 0;
@@ -313,6 +320,8 @@ int length(LinkedListNode** head)
         count += 1;
     }
     return (count);
+    */
+    return 0;
     
 }
 
@@ -331,7 +340,7 @@ int length(LinkedListNode** head)
 void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn compare)
 {
     // IMPLEMENT THIS
-    
+    //list1_head node ->obj compare(list1_head node ->obj, list1_head)
 }
 
 // Split the list head in half and place half in the split list
@@ -339,6 +348,7 @@ void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn 
 void split(LinkedListNode** head, LinkedListNode** split_head)
 {
     // IMPLEMENT THIS
+    //receive head double pointer, find length, divide by two
 }
 
 // Implement the mergesort algorithm to sort the list
