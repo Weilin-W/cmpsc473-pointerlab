@@ -173,8 +173,8 @@ void iterator_next(LinkedListIterator* iter)
 {
     // IMPLEMENT THIS
     if(iter->curr != NULL){
+        iter->prev_next = &iter->curr->next;
         iter->curr = iter->curr->next;
-        iter->prev_next = &iter->curr;
     }
 }
 
@@ -211,8 +211,8 @@ LinkedListNode* iterator_remove(LinkedListIterator* iter)
     //update curr and update the prev_next(-10123 curr = 1) prev_next equals 1;
     if(iter->curr != NULL){
         LinkedListNode* temp = iter->curr;
-        *iter->prev_next = temp->next;
-        iter->curr = temp->next;
+        *iter->prev_next = iter->curr->next;
+        iter->curr = iter->curr->next;
         return(temp);
     }else{
         return NULL;
@@ -231,7 +231,6 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
     }else{
         node->next = iter->curr->next;
         iter->curr->next = node;
-        *iter->prev_next = iter->curr;
         return(0);
     }
 }
@@ -244,12 +243,14 @@ void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
     //insert the node before the current node
     if(iter->curr != NULL){
         node->next = iter->curr;
-        iter->curr = node;
-        *iter->prev_next = iter->curr;
+        *iter->prev_next = node;
+        iter->prev_next = &node->next;
+    }else{
+        //Empty list
+        node->next = NULL;
+        *iter->prev_next = node;
+        iter->prev_next = &node->next;
     }
-    node->next = NULL;
-    iter->curr = node;
-    *iter->prev_next = iter->curr;
 }
 //
 // List functions
@@ -328,7 +329,27 @@ int length(LinkedListNode** head)
 void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn compare)
 {
     // IMPLEMENT THIS
-    //list1_head node ->obj compare(list1_head node ->obj, list1_head)
+    LinkedListIterator iter;
+    LinkedListIterator iter2;
+    iterator_begin(&iter, list1_head);
+    iterator_begin(&iter2, list2_head);
+
+    while(iterator_at_end(&iter2) == false){
+        //insert after the current node in iter 1
+        if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) < 0){
+            iterator_insert_after(&iter, iterator_remove(&iter2));
+            iterator_next(&iter);
+        //insert before the current node in iter 1
+        }else if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) > 0){
+            iterator_insert_before(&iter, iterator_remove(&iter2));
+        //End of iter 1
+        }else if(iterator_at_end(&iter) == true){
+            iterator_insert_before(&iter, iterator_remove(&iter2));
+        //insert after the current node in iter 1 when the object is equal
+        }else{
+            iterator_insert_after(&iter, iterator_remove(&iter2));
+        }
+    }
 }
 
 // Split the list head in half and place half in the split list
@@ -336,7 +357,20 @@ void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn 
 void split(LinkedListNode** head, LinkedListNode** split_head)
 {
     // IMPLEMENT THIS
+    /*
     //receive head double pointer, find length, divide by two
+    LinkedListIterator iter;
+    LinkedListIterator iter2;
+    iterator_begin(&iter, head);
+    iterator_begin(&iter2, split_head);
+
+    int count = length(head)/2;
+
+    while(count != 0){
+        iterator_insert_after(&iter2, head);
+        iterator_remove(&iter, head);
+    }*/
+
 }
 
 // Implement the mergesort algorithm to sort the list
@@ -349,5 +383,30 @@ void split(LinkedListNode** head, LinkedListNode** split_head)
 void mergesort(LinkedListNode** head, compare_fn compare)
 {
     // IMPLEMENT THIS
+    /*
+    LinkedListIterator iter;
+    LinkedListIterator iter2;
+    LinkedListNode** head_2 = head;
+    iterator_begin(&iter, head);
+    iterator_begin(&iter2, head_2);
+    iterator_next(&iter2);
+
+    while(iterator_at_end(&iter2) != true){
+        iterator_next(&iter);
+        if(compare(iterator_get_object(&iter),iterator_get_object(&iter2)) < 0){
+            iterator_insert_after(&iter, &head_2);
+            iterator_remove(&iter2);
+            iterator_next(&iter);
+        }
+        }else if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) > 0){
+            iterator_insert_before(&iter, &head_2);
+            iterator_remove(&iter2);
+            iterator_next(&iter);
+        }else{
+            iterator_insert_after(&iter, &head_2);
+            iterator_remove(&iter2);
+            iterator_next(&iter);
+        }
+    }*/
     
 }
