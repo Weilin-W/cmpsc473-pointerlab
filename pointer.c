@@ -263,9 +263,9 @@ void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* 
     //run thru the head, find value of max, set equal to max
     LinkedListIterator iter;
     iterator_begin(&iter, head);
-    //int count = length(head);
     double sum = 0;
-    //how to use double pointer
+    //Loop thru the list, getting the price for each object, adjusting max and min to the price accordingly
+    //Increment the sum everytime a price is located
     while(iterator_at_end(&iter) != true){
         if(object_price(iterator_get_object(&iter)) > *max){
             *max = object_price(iterator_get_object(&iter));
@@ -291,7 +291,9 @@ Data foreach(LinkedListNode** head, foreach_fn func, Data data)
     LinkedListIterator iter;
     int count = length(head);
     iterator_begin(&iter, head);
+    //Loop thru the length
     while(count != 0){
+        //Adjusting data to fit foreach behave: return func(node3, func(node2, func(node1, data)))
         data = func(iterator_get_object(&iter), data);
         iterator_next(&iter);
         count -= 1;
@@ -305,8 +307,10 @@ int length(LinkedListNode** head)
     // IMPLEMENT THIS
     LinkedListIterator iter;
     int count = 0;
+    //Loop the iterator list til end
     iterator_begin(&iter, head);
     while(iterator_at_end(&iter) != true){
+        //Next node and increment the count
         iterator_next(&iter);
         count += 1;
     }
@@ -333,7 +337,7 @@ void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn 
     LinkedListIterator iter2;
     iterator_begin(&iter, list1_head);
     iterator_begin(&iter2, list2_head);
-
+    //Loop til iter2 list is empty
     while(iterator_at_end(&iter2) == false){
         //End of iter 1
         if(iterator_at_end(&iter) == true){
@@ -362,8 +366,9 @@ void split(LinkedListNode** head, LinkedListNode** split_head)
     iterator_begin(&iter, head);
     iterator_begin(&iter2, split_head);
 
+    //Round the integer: to be half
     int count = (int)(length(head)/2 + 0.9);
-
+    //Only loop the half count and insert into split list
     while(count != 0){
         iterator_insert_after(&iter2, iterator_remove(&iter));
         count -= 1;
@@ -381,20 +386,21 @@ void split(LinkedListNode** head, LinkedListNode** split_head)
 void mergesort(LinkedListNode** head, compare_fn compare)
 {
     // IMPLEMENT THIS
-    
     LinkedListIterator iter;
     LinkedListIterator iter2;
     LinkedListNode** head_2 = head;
     iterator_begin(&iter, head);
     iterator_begin(&iter2, head_2);
     iterator_remove(&iter2);
-
+    //Loop til the iter2 list is empty
     while(iterator_at_end(&iter2) == false){
-        iterator_next(&iter);
+        //Insert after: bigger object
         if(compare(iterator_get_object(&iter),iterator_get_object(&iter2)) < 0){
             iterator_insert_after(&iter, iterator_remove(&iter2));
+        //Insert before: smaller object
         }else if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) > 0){
             iterator_insert_before(&iter, iterator_remove(&iter2));
+        //Insert after: equal object
         }else{
             iterator_insert_after(&iter, iterator_remove(&iter2));
         }
