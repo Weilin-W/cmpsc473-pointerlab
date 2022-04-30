@@ -209,11 +209,10 @@ LinkedListNode* iterator_remove(LinkedListIterator* iter)
     // IMPLEMENT THIS
     //check if current node is empty, if not, get value of current
     //update curr and update the prev_next(-10123 curr = 1) prev_next equals 1;
-    if(iterator_at_end(iter) != true){
-        LinkedListNode* temp = *iter->prev_next;
-        *iter->prev_next = iter->curr->next;
-        //iter->curr = iter->curr->next;
-        iterator_next(iter);
+    if(iter->curr != NULL){
+        LinkedListNode* temp = iter->curr;
+        *iter->prev_next = temp->next;
+        iter->curr = temp->next;
         return(temp);
     }else{
         return NULL;
@@ -232,6 +231,7 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
     }else{
         node->next = iter->curr->next;
         iter->curr->next = node;
+        *iter->prev_next = iter->curr;
         return(0);
     }
 }
@@ -241,19 +241,15 @@ int iterator_insert_after(LinkedListIterator* iter, LinkedListNode* node)
 void iterator_insert_before(LinkedListIterator* iter, LinkedListNode* node)
 {
     // IMPLEMENT THIS
-    ///////////////////////////////////
-    //
-    //Need Fix
-    //
-    ///////////////////////////////////
-    /*
-    while(iter->curr->next != NULL){
-        iter->curr = iter->curr->next;
-    }
-    */
     //insert the node before the current node
-    node->next = iter->curr;
+    if(iter->curr != NULL){
+        node->next = iter->curr;
+        iter->curr = node;
+        *iter->prev_next = iter->curr;
+    }
+    node->next = NULL;
     iter->curr = node;
+    *iter->prev_next = iter->curr;
 }
 //
 // List functions
@@ -264,7 +260,8 @@ void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* 
 {
     // IMPLEMENT THIS
     //run thru the head, find value of max, set equal to max
-    /*
+    LinkedListIterator iter;
+    iterator_begin(&iter, head);
     int count = 0;
     double sum = 0;
     //how to use double pointer
@@ -281,7 +278,7 @@ void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* 
         count += 1;
     }
     *avg = 1.0*sum/length(head);
-    */
+    
 }
 
 // Executes the func function for each node in the list
@@ -291,37 +288,29 @@ void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* 
 Data foreach(LinkedListNode** head, foreach_fn func, Data data)
 {
     // IMPLEMENT THIS
-    ///////////////////////////////////
-    //
-    //Need Fix
-    //
-    ///////////////////////////////////
-    /*
+    LinkedListIterator iter;
     int count = length(head);
-
+    iterator_begin(&iter, head);
     while(count != 0){
-        data = func(head, data);
-        head = head->next;
+        data = func(iterator_get_object(&iter), data);
+        iterator_next(&iter);
         count -= 1;
-    }*/
+    }
     return data;
 }
 
 // Returns the length of the list
 int length(LinkedListNode** head)
 {
-    /*
     // IMPLEMENT THIS
-    LinkedListIterator* iter;
+    LinkedListIterator iter;
     int count = 0;
-    iterator_begin(iter, head);
-    while (iterator_at_end(iter) != true){
-        iterator_next(iter);
+    iterator_begin(&iter, head);
+    while(iterator_at_end(&iter) != true){
+        iterator_next(&iter);
         count += 1;
     }
     return (count);
-    */
-    return 0;
     
 }
 
