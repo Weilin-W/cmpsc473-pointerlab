@@ -262,22 +262,21 @@ void max_min_avg_price(LinkedListNode** head, double* max, double* min, double* 
     //run thru the head, find value of max, set equal to max
     LinkedListIterator iter;
     iterator_begin(&iter, head);
-    int count = 0;
+    //int count = length(head);
     double sum = 0;
     //how to use double pointer
-    if(count < length(head)){
-        if(head->obj.price > max){
-            *max = head->obj.price;
+    while(iterator_at_end(&iter) != true){
+        if(object_price(iterator_get_object(&iter)) > *max){
+            *max = object_price(iterator_get_object(&iter));
         }
-        if(head->obj.price < min){
-            *min = head->obj.price;
+        else if((object_price(iterator_get_object(&iter)) < *min) || object_price(iterator_get_object(&iter)) > 0){
+            *min = object_price(iterator_get_object(&iter));
         }
 
-        sum += head->obj.price;
-        head->next;
-        count += 1;
+        sum += object_price(iterator_get_object(&iter));
+        iterator_next(&iter);
     }
-    *avg = 1.0*sum/length(head);
+    *avg = sum/(double)length(head);
     
 }
 
