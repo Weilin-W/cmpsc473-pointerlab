@@ -335,19 +335,18 @@ void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn 
     iterator_begin(&iter2, list2_head);
 
     while(iterator_at_end(&iter2) == false){
+        //End of iter 1
+        if(iterator_at_end(&iter) == true){
+            iterator_insert_before(&iter, iterator_remove(&iter2));
         //insert after the current node in iter 1
-        if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) < 0){
+        }else if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) < 0){
             iterator_insert_after(&iter, iterator_remove(&iter2));
-            iterator_next(&iter);
         //insert before the current node in iter 1
         }else if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) > 0){
             iterator_insert_before(&iter, iterator_remove(&iter2));
-        //End of iter 1
-        }else if(iterator_at_end(&iter) == true){
-            iterator_insert_before(&iter, iterator_remove(&iter2));
         //insert after the current node in iter 1 when the object is equal
-        }else{
-            iterator_insert_after(&iter, iterator_remove(&iter2));
+        }else if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) == 0){
+            iterator_insert_before(&iter, iterator_remove(&iter2));
         }
     }
 }
@@ -357,19 +356,18 @@ void merge(LinkedListNode** list1_head, LinkedListNode** list2_head, compare_fn 
 void split(LinkedListNode** head, LinkedListNode** split_head)
 {
     // IMPLEMENT THIS
-    /*
     //receive head double pointer, find length, divide by two
     LinkedListIterator iter;
     LinkedListIterator iter2;
     iterator_begin(&iter, head);
     iterator_begin(&iter2, split_head);
 
-    int count = length(head)/2;
+    int count = (int)(length(head)/2 + 0.9);
 
     while(count != 0){
-        iterator_insert_after(&iter2, head);
-        iterator_remove(&iter, head);
-    }*/
+        iterator_insert_after(&iter2, iterator_remove(&iter));
+        count -= 1;
+    }
 
 }
 
@@ -383,30 +381,23 @@ void split(LinkedListNode** head, LinkedListNode** split_head)
 void mergesort(LinkedListNode** head, compare_fn compare)
 {
     // IMPLEMENT THIS
-    /*
+    
     LinkedListIterator iter;
     LinkedListIterator iter2;
     LinkedListNode** head_2 = head;
     iterator_begin(&iter, head);
     iterator_begin(&iter2, head_2);
-    iterator_next(&iter2);
+    iterator_remove(&iter2);
 
-    while(iterator_at_end(&iter2) != true){
+    while(iterator_at_end(&iter2) == false){
         iterator_next(&iter);
         if(compare(iterator_get_object(&iter),iterator_get_object(&iter2)) < 0){
-            iterator_insert_after(&iter, &head_2);
-            iterator_remove(&iter2);
-            iterator_next(&iter);
-        }
+            iterator_insert_after(&iter, iterator_remove(&iter2));
         }else if(compare(iterator_get_object(&iter), iterator_get_object(&iter2)) > 0){
-            iterator_insert_before(&iter, &head_2);
-            iterator_remove(&iter2);
-            iterator_next(&iter);
+            iterator_insert_before(&iter, iterator_remove(&iter2));
         }else{
-            iterator_insert_after(&iter, &head_2);
-            iterator_remove(&iter2);
-            iterator_next(&iter);
+            iterator_insert_after(&iter, iterator_remove(&iter2));
         }
-    }*/
+    }
     
 }
